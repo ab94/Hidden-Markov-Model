@@ -1,4 +1,5 @@
 import sys
+import json
 
 " Learn the emission and transition probabilities from the tagged data set "
 
@@ -34,6 +35,12 @@ def parse_input():
     print(tag_transition)
     print(word_to_tagdict)
     print(total_tag_count)
+    output = {
+        "tag_transitions": tag_transition,
+        "emission": word_to_tagdict,
+    }
+    output_file = open("hmmmodel.txt", 'w')
+    json.dump(output, output_file)
 
 
 def calculate_transition_terms(tag_transition, word_list, tag, index, last_word_count):
