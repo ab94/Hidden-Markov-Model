@@ -3,13 +3,12 @@ import json
 
 " Learn the emission and transition probabilities from the tagged data set "
 
-""" Accept input file and store it in a dict """
-
 
 def parse_input():
     input_file = sys.argv[1]
     if input_file is None:
         print("ERROR: Enter a file name for training data")
+        exit(1)
 
     file = open(input_file, "r", encoding='utf-8')
 
@@ -17,9 +16,11 @@ def parse_input():
     total_tag_count = {}
     last_word_count = {}
     tag_transition = {}
+    line_count = 0
 
     for line in file:
         word_list = line.split(" ")
+        line_count += 1
         for index, word_with_tag in enumerate(word_list):
             word = get_word(word_with_tag)
             tag = get_tag(word_with_tag)
@@ -31,13 +32,12 @@ def parse_input():
             calculate_emission_terms(total_tag_count, tag, word_to_tagdict, word)
             calculate_transition_terms(tag_transition, word_list, tag, index, last_word_count)
 
-    print(last_word_count)
-    print(tag_transition)
-    print(word_to_tagdict)
-    print(total_tag_count)
     output = {
         "tag_transitions": tag_transition,
         "emission": word_to_tagdict,
+        "total_tag_count": total_tag_count,
+        "last_word_count": last_word_count,
+        "line_count": line_count,
     }
     output_file = open("hmmmodel.txt", 'w')
     json.dump(output, output_file)
@@ -72,7 +72,6 @@ def calculate_emission_terms(total_tag_count, tag, word_to_tagdict, word):
     add_one(dictionary, tag)
 
 
-
 def add_one(dictionary, key):
     if key in dictionary:
         dictionary[key] += 1
@@ -104,4 +103,3 @@ def get_word(word_with_tag):
 
 if __name__ == "__main__":
     parse_input()
-
