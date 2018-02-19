@@ -39,10 +39,17 @@ def calculate_word_probability(word_list, word_prob, backpointer):
 
 
 def calculate_prob(word, index, word_list, word_prob, backpointer):
-        tag_dict = emission[word]
+        # New word; Never occured in training set.
+        if word not in emission:
+            tag_dict = add_all_tags_to_dict()
+        else:
+            tag_dict = emission[word]
         for tag, frequency in tag_dict.items():
-            # EMISSION PROBABILITY
-            emission_prob = frequency / total_tag_count[tag]
+            # emission_probability = 1 for new words(frequency = 0) so that the term is ignored in total probability calculations.
+            if frequency == 0:
+                emission_prob = 1
+            else:
+                emission_prob = frequency / total_tag_count[tag]
             if index not in word_prob:
                 word_prob[index] = {}
                 backpointer[index] = {}
@@ -116,6 +123,14 @@ def get_model_parameters():
     last_word_count = model["last_word_count"]
     tag_transition = model["tag_transitions"]
     line_count = model["line_count"]
+
+
+def add_all_tags_to_dict():
+    all_tags = {}
+    for tag, value in total_tag_count.items():
+        all_tags[tag] = 0
+    return all_tags
+
 
 
 if __name__ == "__main__":

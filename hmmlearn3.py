@@ -3,6 +3,8 @@ import json
 
 " Learn the emission and transition probabilities from the tagged data set "
 
+output_file_path = "hmmmodel.txt"
+
 
 def parse_input():
     input_file = sys.argv[1]
@@ -39,7 +41,7 @@ def parse_input():
         "last_word_count": last_word_count,
         "line_count": line_count,
     }
-    output_file = open("hmmmodel.txt", 'w')
+    output_file = open(output_file_path, 'w')
     json.dump(output, output_file)
 
 
